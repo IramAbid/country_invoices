@@ -1,0 +1,21 @@
+-- There are following schemas-
+-- Country( id, country_name), 
+-- city ( id, city_name, postal_code,country_id) 
+-- customer( id, customer_name, city_id,customer_address,contact_person, email)
+-- invoice ( id, invoice_number, customer_id, useraccount_id, total_price).  
+-- For each country, display the country name, total number of invoices, and their average amount. Format average upto 6 decimal places. Return only those countries whose average invoices is greater than the average invoice amount over all invoices.
+
+
+SELECT co.country_name, COUNT(*) AS total_invoices, AVG(i.total_price) AS average_amount
+FROM country co
+JOIN city ci ON co.id = ci.country_id
+JOIN customer cu ON ci.id = cu.city_id
+JOIN invoice i ON cu.id = i.customer_id
+GROUP BY co.country_name
+HAVING AVG(i.total_price) > (SELECT AVG(total_price) FROM invoice);
+
+-- select products that are not in the invoice_item table based on their 
+SELECT product.sku, product.product_name
+FROM product
+LEFT JOIN invoice_item ON product.id = invoice_item.product_id
+WHERE invoice_item.product_id IS NULL;
